@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Sortix — your files, organized intelligently.">
+  <title>Sortix · Intelligent file organizer</title>
+  <link rel="stylesheet" href="/css/variables.css">
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/components.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Primary navigation">
+      <div class="brand">
+        <img src="/assets/sortix-logo.png" alt="Sortix" class="brand-logo">
+        <div class="brand-copy"><strong>Sortix</strong><span>Intelligent organizer</span></div>
+      </div>
+      <div class="workspace-label">Workspace</div>
+      <nav class="nav-list">
+        <button class="nav-item active" data-page="dashboard"><span class="nav-icon">⌂</span>Overview</button>
+        <button class="nav-item" data-page="files"><span class="nav-icon">▤</span>Files</button>
+        <button class="nav-item" data-page="duplicates"><span class="nav-icon">◈</span>Duplicates <span class="nav-badge" id="duplicate-nav-count">—</span></button>
+        <button class="nav-item" data-page="rules"><span class="nav-icon">⌘</span>Rules</button>
+        <button class="nav-item" data-page="history"><span class="nav-icon">◷</span>Activity</button>
+      </nav>
+      <div class="sidebar-spacer"></div>
+      <div class="privacy-note"><span class="lock-mark">◉</span><div><strong>Private by design</strong><p>Your files stay on this device.</p></div></div>
+      <button class="nav-item" data-page="settings"><span class="nav-icon">⚙</span>Settings</button>
+      <div class="sidebar-footer">SORTIX <span>v1.0.0</span></div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div class="breadcrumbs"><span>Workspace</span><b>/</b><strong id="breadcrumb-page">Overview</strong></div>
+        <div class="topbar-actions">
+          <button class="icon-button" id="theme-toggle" aria-label="Toggle theme" title="Toggle dark mode">☼</button>
+          <button class="avatar" aria-label="Local workspace">K</button>
+        </div>
+      </header>
+
+      <div id="app-content" class="content">
+        <section class="page" id="page-dashboard">
+          <div class="page-heading">
+            <div><p class="eyebrow">FILE INTELLIGENCE <span class="live-dot"></span> LOCAL MODE</p><h1>Good to see you.</h1><p class="heading-subtitle">Bring order to your files without giving up control.</p></div>
+            <button class="button primary" id="scan-button"><span>⌕</span> Scan folder</button>
+          </div>
+
+          <div class="folder-bar">
+            <span class="folder-symbol">⌂</span><div class="folder-input-wrap"><label for="root-path">Selected folder</label><input id="root-path" type="text" placeholder="Enter a local folder path, e.g. ~/Downloads" spellcheck="false"></div>
+            <label class="check-control"><input type="checkbox" id="include-hidden"> Include hidden</label>
+            <button class="button secondary small" id="clear-folder">Clear</button>
+          </div>
+
+          <div class="welcome-card" id="welcome-card">
+            <div class="welcome-orbit"><img src="/assets/sortix-logo.png" alt="" /></div>
+            <div><p class="eyebrow">START HERE</p><h2>Choose a folder to begin</h2><p>Sortix scans metadata locally, explains every suggestion, and waits for your approval before moving anything.</p><button class="button primary" id="welcome-scan">Choose folder & scan <span>→</span></button></div>
+            <div class="flow"><span>SCAN</span><i>→</i><span>REVIEW</span><i>→</i><span>APPROVE</span><i>→</i><span>UNDO</span></div>
+          </div>
+
+          <div class="stats-grid" id="stats-grid" hidden>
+            <div class="stat-card"><div class="stat-top"><span>Files found</span><span class="stat-icon blue">▤</span></div><strong id="file-count">0</strong><small id="scan-time">—</small></div>
+            <div class="stat-card"><div class="stat-top"><span>Total size</span><span class="stat-icon violet">◒</span></div><strong id="total-size">0 B</strong><small>Metadata only · local</small></div>
+            <div class="stat-card"><div class="stat-top"><span>Folders</span><span class="stat-icon cyan">⌂</span></div><strong id="folder-count">0</strong><small>Nested directories</small></div>
+            <div class="stat-card"><div class="stat-top"><span>Potential duplicates</span><span class="stat-icon orange">◈</span></div><strong id="duplicate-count">0</strong><small id="duplicate-space">Run duplicate scan to check</small></div>
+          </div>
+
+          <div class="dashboard-grid" id="dashboard-details" hidden>
+            <section class="panel category-panel"><div class="panel-heading"><div><h3>File landscape</h3><p>How your folder is composed</p></div><button class="text-button" data-page-link="files">View all <span>→</span></button></div><div id="category-chart" class="category-chart"></div></section>
+            <section class="panel suggestions-panel"><div class="panel-heading"><div><h3>Suggested actions</h3><p>Transparent, reversible recommendations</p></div><span class="sparkle">✦</span></div><div id="suggestions-list" class="suggestions-list"></div></section>
+          </div>
+
+          <section class="panel recent-panel" id="recent-panel" hidden><div class="panel-heading"><div><h3>Recent activity</h3><p>Your local operation history</p></div><button class="text-button" data-page-link="history">See activity <span>→</span></button></div><div id="recent-activity"></div></section>
+        </section>
+
+        <section class="page" id="page-files" hidden>
+          <div class="page-heading compact"><div><p class="eyebrow">LIBRARY</p><h1>All files</h1><p class="heading-subtitle" id="files-subtitle">Scan a folder to inspect its metadata.</p></div><button class="button secondary" id="files-scan">⌕ Scan again</button></div>
+          <div class="toolbar"><div class="search-box"><span>⌕</span><input id="file-search" placeholder="Search by name, type, or folder…"></div><select id="category-filter"><option value="">All categories</option></select><select id="sort-files"><option value="name">Name</option><option value="size">Largest first</option><option value="modified">Recently modified</option></select></div>
+          <div class="panel table-panel"><div class="table-header"><span id="file-result-count">0 files</span><span>Metadata is read locally</span></div><div class="file-table" id="file-table"></div></div>
+        </section>
+
+        <section class="page" id="page-duplicates" hidden>
+          <div class="page-heading compact"><div><p class="eyebrow">CLEANUP INTELLIGENCE</p><h1>Duplicates</h1><p class="heading-subtitle">Exact matches only. Sortix never deletes automatically.</p></div><button class="button secondary" id="duplicate-scan">◈ Find duplicates</button></div>
+          <div class="duplicate-summary" id="duplicate-summary"><div><span class="big-number">—</span><span>duplicate groups</span></div><div><span class="big-number">—</span><span>recoverable space</span></div><div class="summary-note">Hashing runs locally and streams file contents without storing them.</div></div>
+          <div id="duplicate-groups" class="duplicate-groups empty-block"><div class="empty-icon">◈</div><h3>No duplicate scan yet</h3><p>Scan a selected folder to find exact duplicate files.</p></div>
+        </section>
+
+        <section class="page" id="page-rules" hidden>
+          <div class="page-heading compact"><div><p class="eyebrow">AUTOMATION, ON YOUR TERMS</p><h1>Sorting rules</h1><p class="heading-subtitle">First match wins. Change the plan before it touches a file.</p></div><button class="button primary" id="add-rule">＋ New rule</button></div>
+          <div class="rules-info"><span class="info-icon">i</span><div><strong>How rules work</strong><p>Rules are evaluated locally in priority order. Preview always shows the exact destination and collision-safe filename before sorting.</p></div></div>
+          <div id="rules-list" class="rules-list"></div>
+        </section>
+
+        <section class="page" id="page-history" hidden>
+          <div class="page-heading compact"><div><p class="eyebrow">AUDIT TRAIL</p><h1>Activity</h1><p class="heading-subtitle">Every operation stays inspectable and reversible where possible.</p></div></div>
+          <div id="history-list" class="history-list"></div>
+        </section>
+
+        <section class="page" id="page-settings" hidden>
+          <div class="page-heading compact"><div><p class="eyebrow">PREFERENCES</p><h1>Settings</h1><p class="heading-subtitle">A few deliberate defaults for a safer organizer.</p></div></div>
+          <div class="settings-grid"><section class="panel settings-section"><h3>General</h3><label class="setting-row"><span><strong>Theme</strong><small>Use the interface that feels right.</small></span><select id="settings-theme"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></label><label class="setting-row"><span><strong>Include hidden files</strong><small>Show hidden files in the next scan.</small></span><input class="toggle" type="checkbox" id="settings-hidden"></label></section><section class="panel settings-section"><h3>Safety</h3><label class="setting-row"><span><strong>Always preview before sorting</strong><small>Never skip the review step.</small></span><input class="toggle" type="checkbox" checked disabled></label><label class="setting-row"><span><strong>Collision strategy</strong><small>Existing files are never overwritten.</small></span><span class="setting-pill">Keep both</span></label></section><section class="panel settings-section"><h3>Privacy</h3><div class="privacy-large"><span class="lock-mark">◉</span><div><strong>Local-first processing</strong><p>Sortix uses a local server and does not upload file names, contents, or metadata. No telemetry is included.</p></div></div></section></div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="preview-modal" hidden><div class="modal preview-modal" role="dialog" aria-modal="true" aria-labelledby="preview-title"><button class="modal-close" data-close-modal aria-label="Close">×</button><p class="eyebrow">SAFE OPERATION</p><h2 id="preview-title">Review sorting plan</h2><p class="modal-subtitle" id="preview-subtitle"></p><div class="preview-list" id="preview-list"></div><div class="preview-footer"><span id="preview-skipped"></span><div><button class="button secondary" data-close-modal>Cancel</button><button class="button primary" id="approve-sort">Approve & sort <span>→</span></button></div></div></div></div>
+  <div class="modal-backdrop" id="rule-modal" hidden><div class="modal small-modal" role="dialog" aria-modal="true"><button class="modal-close" data-close-modal aria-label="Close">×</button><p class="eyebrow">CUSTOM RULE</p><h2>Create a rule</h2><form id="rule-form"><label>Rule name<input name="name" required placeholder="e.g. Invoices"></label><label>When <select name="field"><option value="extension">Extension</option><option value="filename">Filename</option><option value="category">Category</option><option value="mime_type">MIME type</option></select></label><label>Condition <select name="operator"><option value="is">is</option><option value="contains">contains</option><option value="starts_with">starts with</option><option value="matches">matches pattern</option></select></label><label>Value<input name="value" required placeholder="e.g. pdf"></label><label>Move to<input name="destination" required placeholder="e.g. Documents/Invoices"></label><div class="form-actions"><button type="button" class="button secondary" data-close-modal>Cancel</button><button class="button primary">Save rule</button></div></form></div></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script type="module" src="/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,1 @@
+"""Metadata-first filesystem scanning."""

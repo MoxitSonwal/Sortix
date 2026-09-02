@@ -1,0 +1,1 @@
+"""Safety checks for filesystem operations."""

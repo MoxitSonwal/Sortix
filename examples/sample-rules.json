@@ -1,0 +1,12 @@
+[
+  {
+    "id": "invoices",
+    "name": "Invoices",
+    "enabled": true,
+    "conditions": [
+      {"field": "extension", "operator": "is", "value": "pdf"},
+      {"field": "filename", "operator": "contains", "value": "invoice"}
+    ],
+    "destination": "Documents/Invoices"
+  }
+]

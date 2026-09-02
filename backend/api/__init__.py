@@ -1,0 +1,1 @@
+"""HTTP API for the local Sortix desktop-style application."""
